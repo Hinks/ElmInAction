@@ -87,7 +87,7 @@ type Msg
     | SlidHue Int
     | SlidRipple Int
     | SlidNoise Int
-    | GotActivity String
+    | GotActivity Decode.Value
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -138,8 +138,13 @@ update msg model =
         SlidNoise noise ->
             applyFilters { model | noise = noise }
 
-        GotActivity activity ->
-            ( { model | activity = activity }, Cmd.none )
+        GotActivity value ->
+            case Decode.decodeValue Decode.string value of
+                Ok status ->
+                    ( { model | activity = status }, Cmd.none )
+
+                Err _ ->
+                    ( { model | activity = "Pasta status error" }, Cmd.none )
 
 
 applyFilters : Model -> ( Model, Cmd Msg )
@@ -309,7 +314,7 @@ subscriptions _ =
 port setFilters : FilterOptions -> Cmd msg
 
 
-port activityChanges : (String -> msg) -> Sub msg
+port activityChanges : (Decode.Value -> msg) -> Sub msg
 
 
 
