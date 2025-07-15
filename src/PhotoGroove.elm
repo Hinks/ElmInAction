@@ -3,30 +3,10 @@ port module PhotoGroove exposing (main)
 import Browser
 import Html exposing (..)
 import Html.Attributes as Attr
-    exposing
-        ( class
-        , classList
-        , id
-        , name
-        , src
-        , title
-        , type_
-        )
 import Html.Events exposing (on, onClick)
 import Http
-import Json.Decode
-    exposing
-        ( Decoder
-        , Value
-        , at
-        , decodeValue
-        , float
-        , int
-        , list
-        , string
-        , succeed
-        )
-import Json.Decode.Pipeline exposing (optional, required)
+import Json.Decode as Decode
+import Json.Decode.Pipeline as Pipeline
 import Json.Encode as Encode
 import Random
 
@@ -90,7 +70,7 @@ initialCmd : Cmd Msg
 initialCmd =
     Http.get
         { url = "http://elm-in-action.com/photos/list.json"
-        , expect = Http.expectJson GotPhotos (list photoDecoder)
+        , expect = Http.expectJson GotPhotos (Decode.list photoDecoder)
         }
 
 
@@ -139,20 +119,11 @@ update msg model =
                     ( model, Cmd.none )
 
         GotPhotos (Ok photos) ->
-            case photos of
-                first :: _ ->
-                    applyFilters
-                        { model
-                            | status =
-                                case List.head photos of
-                                    Just photo ->
-                                        Loaded photos photo.url
+            case List.head photos of
+                Just photo ->
+                    applyFilters { model | status = Loaded photos photo.url }
 
-                                    Nothing ->
-                                        Loaded [] ""
-                        }
-
-                [] ->
+                Nothing ->
                     ( { model | status = Errored "0 photos found" }, Cmd.none )
 
         GotPhotos (Err _) ->
@@ -213,7 +184,7 @@ selectUrl url status =
 
 view : Model -> Html Msg
 view model =
-    div [ class "content" ] <|
+    div [ Attr.class "content" ] <|
         case model.status of
             Loaded photos selectedUrl ->
                 viewLoaded photos selectedUrl model.chosenSize model
@@ -227,7 +198,7 @@ view model =
 
 viewFilter : (Int -> Msg) -> String -> Int -> Html Msg
 viewFilter toMsg name magnitude =
-    div [ class "filter-slider" ]
+    div [ Attr.class "filter-slider" ]
         [ label [] [ text name ]
         , rangeSlider
             [ Attr.max "11"
@@ -245,27 +216,27 @@ viewLoaded photos selectedUrl chosenSize model =
     , button
         [ onClick ClickedSurpriseMe ]
         [ text "Surprise Me!" ]
-    , div [ class "activity" ] [ text model.activity ]
-    , div [ class "filters" ]
+    , div [ Attr.class "activity" ] [ text model.activity ]
+    , div [ Attr.class "filters" ]
         [ viewFilter SlidHue "Hue" model.hue
         , viewFilter SlidRipple "Ripple" model.ripple
         , viewFilter SlidNoise "Noise" model.noise
         ]
     , h3 [] [ text "Thumbnail Size:" ]
-    , div [ id "choose-size" ]
+    , div [ Attr.id "choose-size" ]
         (List.map viewSizeChooser [ Small, Medium, Large ])
-    , div [ id "thumbnails", class (sizeToString chosenSize) ]
+    , div [ Attr.id "thumbnails", Attr.class (sizeToString chosenSize) ]
         (List.map (viewThumbnail selectedUrl) photos)
-    , canvas [ id "main-canvas", class "large" ] []
+    , canvas [ Attr.id "main-canvas", Attr.class "large" ] []
     ]
 
 
 viewThumbnail : String -> Photo -> Html Msg
 viewThumbnail selectedUrl thumb =
     img
-        [ src (urlPrefix ++ thumb.url)
-        , title (thumb.title ++ "[" ++ String.fromInt thumb.size ++ " kb]")
-        , classList [ ( "selected", selectedUrl == thumb.url ) ]
+        [ Attr.src (urlPrefix ++ thumb.url)
+        , Attr.title (thumb.title ++ "[" ++ String.fromInt thumb.size ++ " kb]")
+        , Attr.classList [ ( "selected", selectedUrl == thumb.url ) ]
         , onClick (ClickedPhoto thumb.url)
         ]
         []
@@ -275,8 +246,8 @@ viewSizeChooser : ThumbnailSize -> Html Msg
 viewSizeChooser size =
     label []
         [ input
-            [ type_ "radio"
-            , name "size"
+            [ Attr.type_ "radio"
+            , Attr.name "size"
             , onClick (ClickedSize size)
             ]
             []
@@ -291,8 +262,8 @@ rangeSlider attributes children =
 
 onSlide : (Int -> msg) -> Attribute msg
 onSlide toMsg =
-    at [ "detail", "userSlidTo" ] int
-        |> Json.Decode.map toMsg
+    Decode.at [ "detail", "userSlidTo" ] Decode.int
+        |> Decode.map toMsg
         |> on "slide"
 
 
@@ -313,12 +284,12 @@ sizeToString size =
 -- DECODER
 
 
-photoDecoder : Decoder Photo
+photoDecoder : Decode.Decoder Photo
 photoDecoder =
-    succeed buildPhoto
-        |> required "url" string
-        |> required "size" int
-        |> optional "title" string "(untitled)"
+    Decode.succeed buildPhoto
+        |> Pipeline.required "url" Decode.string
+        |> Pipeline.required "size" Decode.int
+        |> Pipeline.optional "title" Decode.string "(untitled)"
 
 
 buildPhoto : String -> Int -> String -> Photo
@@ -345,11 +316,11 @@ port activityChanges : (String -> msg) -> Sub msg
 -- MAIN
 
 
-init : Value -> ( Model, Cmd Msg )
+init : Decode.Value -> ( Model, Cmd Msg )
 init flags =
     let
         activity =
-            case decodeValue float flags of
+            case Decode.decodeValue Decode.float flags of
                 Ok version ->
                     "Initializing Pasta v" ++ String.fromFloat version
 
@@ -359,7 +330,7 @@ init flags =
     ( { initialModel | activity = activity }, initialCmd )
 
 
-main : Program Value Model Msg
+main : Program Decode.Value Model Msg
 main =
     Browser.element
         { init = init
