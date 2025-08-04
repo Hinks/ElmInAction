@@ -39,6 +39,11 @@
 
         <script src="http://elm-in-action.com/pasta.js"></script>
         <script src="app.js"></script>
+        
+        <script>
+            var app = Elm.PhotoFolders.init({node: document.getElementById("app")});
+        </script>
+        <!--
         <script>
             var app = Elm.PhotoGroove.init({
                 node: document.getElementById("app"),
@@ -56,5 +61,6 @@
                 app.ports.activityChanges.send(activity);
             });
         </script>
+        -->
     </body>
 </html>
