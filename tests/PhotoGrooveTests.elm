@@ -5,18 +5,7 @@ import Fuzz exposing (Fuzzer, int, string)
 import Html.Attributes as Attr
 import Json.Decode as Decode
 import Json.Encode as Encode
-import PhotoGroove
-    exposing
-        ( Model
-        , Msg(..)
-        , Photo
-        , Status(..)
-        , initialModel
-        , photoDecoder
-        , update
-        , urlPrefix
-        , view
-        )
+import PhotoGallery as Gallery exposing (initialModel, Status(..), Msg(..))
 import Test exposing (..)
 import Test.Html.Event as Event
 import Test.Html.Query as Query
@@ -31,7 +20,7 @@ decoderTest =
             , ( "size", Encode.int size )
             ]
                 |> Encode.object
-                |> Decode.decodeValue photoDecoder
+                |> Decode.decodeValue Gallery.photoDecoder
                 |> Result.map .title
                 |> Expect.equal
                     (Ok "(untitled)")
@@ -46,12 +35,12 @@ sliders =
         ]
 
 
-testSlider : String -> (Int -> Msg) -> (Model -> Int) -> Test
+testSlider : String -> (Int -> Msg) -> (Gallery.Model -> Int) -> Test
 testSlider description toMsg amountFromModel =
     fuzz int description <|
         \amount ->
             initialModel
-                |> update (toMsg amount)
+                |> Gallery.update (toMsg amount)
                 |> Tuple.first
                 |> amountFromModel
                 |> Expect.equal amount
@@ -62,7 +51,7 @@ noPhotosNoThumbnails =
     test "No thumbnails render when there are no photos to render." <|
         \_ ->
             initialModel
-                |> PhotoGroove.view
+                |> Gallery.view
                 |> Query.fromHtml
                 |> Query.findAll [ tag "img" ]
                 |> Query.count (Expect.equal 0)
@@ -78,7 +67,7 @@ thumbnailsWork =
                     List.map thumbnailRendered urls
             in
             { initialModel | status = Loaded (List.map photoFromUrl urls) "" }
-                |> view
+                |> Gallery.view
                 |> Query.fromHtml
                 |> Expect.all thumbnailsCheck
 
@@ -96,10 +85,10 @@ clickThumbnail =
                         |> List.map photoFromUrl
 
                 srcToClick =
-                    urlPrefix ++ url
+                    Gallery.urlPrefix ++ url
             in
             { initialModel | status = Loaded photos "" }
-                |> view
+                |> Gallery.view
                 |> Query.fromHtml
                 |> Query.find [ tag "img", attribute (Attr.src srcToClick) ]
                 |> Event.simulate Event.click
@@ -121,10 +110,10 @@ urlsFromCount urlCount =
 thumbnailRendered : String -> Query.Single msg -> Expectation
 thumbnailRendered url query =
     query
-        |> Query.findAll [ tag "img", attribute (Attr.src (urlPrefix ++ url)) ]
+        |> Query.findAll [ tag "img", attribute (Attr.src (Gallery.urlPrefix ++ url)) ]
         |> Query.count (Expect.atLeast 1)
 
 
-photoFromUrl : String -> Photo
+photoFromUrl : String -> Gallery.Photo
 photoFromUrl url =
     { url = url, size = 0, title = "" }
