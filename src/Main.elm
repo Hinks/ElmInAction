@@ -99,13 +99,26 @@ view model =
                 NotFound ->
                     text "Not Found"
     in
-    { title = "Photo Groove, SPA Style"
+    { title = browserTitle model.page
     , body =
         [ lazy viewHeader model.page
         , content
         , viewFooter
         ]
     }
+
+
+browserTitle : Page -> String
+browserTitle page =
+    case page of
+        FoldersPage _ ->
+            "Photo Pholders"
+
+        GalleryPage _ ->
+            "Photo Gallery"
+
+        _ ->
+            "Photo Groove, SPA Style"
 
 
 viewHeader : Page -> Html Msg
