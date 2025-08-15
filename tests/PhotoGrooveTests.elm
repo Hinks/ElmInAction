@@ -10,7 +10,7 @@ import Test exposing (..)
 import Test.Html.Event as Event
 import Test.Html.Query as Query
 import Test.Html.Selector exposing (attribute, tag)
-
+import UrlConstants exposing (urlPrefix)
 
 decoderTest : Test
 decoderTest =
@@ -85,7 +85,7 @@ clickThumbnail =
                         |> List.map photoFromUrl
 
                 srcToClick =
-                    Gallery.urlPrefix ++ url
+                    urlPrefix ++ url
             in
             { initialModel | status = Loaded photos "" }
                 |> Gallery.view
@@ -110,7 +110,7 @@ urlsFromCount urlCount =
 thumbnailRendered : String -> Query.Single msg -> Expectation
 thumbnailRendered url query =
     query
-        |> Query.findAll [ tag "img", attribute (Attr.src (Gallery.urlPrefix ++ url)) ]
+        |> Query.findAll [ tag "img", attribute (Attr.src (urlPrefix ++ url)) ]
         |> Query.count (Expect.atLeast 1)
 
 

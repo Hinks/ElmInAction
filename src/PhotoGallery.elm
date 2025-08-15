@@ -8,7 +8,6 @@ port module PhotoGallery exposing
     , photoDecoder
     , subscriptions
     , update
-    , urlPrefix
     , view
     )
 
@@ -21,7 +20,7 @@ import Json.Decode as Decode
 import Json.Decode.Pipeline as Pipeline
 import Json.Encode as Encode
 import Random
-
+import UrlConstants exposing (urlPrefix)
 
 
 -- MODEL
@@ -60,11 +59,6 @@ type alias Model =
     , noise : Int
     , activity : String
     }
-
-
-urlPrefix : String
-urlPrefix =
-    "http://elm-in-action.com/"
 
 
 initialModel : Model
