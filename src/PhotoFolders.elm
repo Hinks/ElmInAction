@@ -145,17 +145,13 @@ modelPhotosFromJson folderPhotos subfolderPhotos =
 
 
 type Msg
-    = ClickedPhoto String
-    | GotInitialModel (Result Http.Error Model)
+    = GotInitialModel (Result Http.Error Model)
     | ClickedFolder FolderPath
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        ClickedPhoto url ->
-            ( { model | selectedPhotoUrl = Just url }, Cmd.none )
-
         GotInitialModel (Ok newModel) ->
             ( { newModel | selectedPhotoUrl = model.selectedPhotoUrl }, Cmd.none )
 
@@ -223,7 +219,6 @@ viewPhoto url =
     a
         [ href ("/photos/" ++ url)
         , class "photo"
-        , onClick (ClickedPhoto url)
         ]
         [ text url ]
 
@@ -243,12 +238,13 @@ viewSelectedPhoto photo =
 
 viewRelatedPhoto : String -> Html Msg
 viewRelatedPhoto url =
-    img
-        [ class "related-photo"
-        , onClick (ClickedPhoto url)
-        , src (urlPrefix ++ "photos/" ++ url ++ "/thumb")
+    a [ href ("/photos/" ++ url) ]
+        [ img
+            [ class "related-photo"
+            , src (urlPrefix ++ "photos/" ++ url ++ "/thumb")
+            ]
+            []
         ]
-        []
 
 
 viewFolder : FolderPath -> Folder -> Html Msg
