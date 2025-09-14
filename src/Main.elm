@@ -1,4 +1,4 @@
-module Main exposing (main)
+module Main exposing (Model, Msg, Page, main)
 
 import Browser exposing (Document)
 import Browser.Navigation as Nav
@@ -9,7 +9,7 @@ import Json.Decode as Decode
 import PhotoFolders as Folders
 import PhotoGallery as Gallery
 import Url exposing (Url)
-import Url.Parser as Parser exposing ((</>), Parser, s, string)
+import Url.Parser as Parser exposing ((</>), Parser, s)
 
 
 type alias Model =
@@ -86,6 +86,7 @@ toGallery model ( gallery, cmd ) =
 view : Model -> Document Msg
 view model =
     let
+        content : Html Msg
         content =
             case model.page of
                 FoldersPage folders ->
@@ -124,14 +125,9 @@ browserTitle page =
 viewHeader : Page -> Html Msg
 viewHeader page =
     let
+        logo : Html msg
         logo =
             h1 [] [ text "Photo Groove" ]
-
-        links =
-            ul []
-                [ navLink Folders { url = "/", caption = "Folders" }
-                , navLink Gallery { url = "/gallery", caption = "Gallery" }
-                ]
 
         navLink : Route -> { url : String, caption : String } -> Html msg
         navLink route { url, caption } =
@@ -143,6 +139,13 @@ viewHeader page =
                     ]
                 ]
                 [ a [ href url ] [ text caption ] ]
+
+        links : Html msg
+        links =
+            ul []
+                [ navLink Folders { url = "/", caption = "Folders" }
+                , navLink Gallery { url = "/gallery", caption = "Gallery" }
+                ]
     in
     nav [] [ logo, links ]
 
@@ -182,6 +185,7 @@ subscriptions model =
             Sub.none
 
 
+init : Decode.Value -> Url -> Nav.Key -> ( Model, Cmd Msg )
 init version url key =
     updateUrl url { page = NotFound, key = key, version = version }
 

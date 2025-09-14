@@ -1,16 +1,23 @@
-module PhotoGrooveTests exposing (..)
+module PhotoGrooveTests exposing
+    ( clickThumbnail
+    , decoderTest
+    , noPhotosNoThumbnails
+    , sliders
+    , thumbnailsWork
+    )
 
 import Expect exposing (Expectation)
 import Fuzz exposing (Fuzzer, int, string)
 import Html.Attributes as Attr
 import Json.Decode as Decode
 import Json.Encode as Encode
-import PhotoGallery as Gallery exposing (initialModel, Status(..), Msg(..))
+import PhotoGallery as Gallery exposing (Msg(..), Status(..), initialModel)
 import Test exposing (..)
 import Test.Html.Event as Event
 import Test.Html.Query as Query
 import Test.Html.Selector exposing (attribute, tag)
 import UrlConstants exposing (urlPrefix)
+
 
 decoderTest : Test
 decoderTest =
@@ -35,7 +42,7 @@ sliders =
         ]
 
 
-testSlider : String -> (Int -> Msg) -> (Gallery.Model -> Int) -> Test
+testSlider : String -> (Int -> Gallery.Msg) -> (Gallery.Model -> Int) -> Test
 testSlider description toMsg amountFromModel =
     fuzz int description <|
         \amount ->

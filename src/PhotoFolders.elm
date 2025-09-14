@@ -1,4 +1,4 @@
-module PhotoFolders exposing (Model, Msg, init, update, view)
+module PhotoFolders exposing (Folder, Model, Msg, Photo, init, update, view)
 
 import Dict exposing (Dict)
 import Html exposing (..)
@@ -254,11 +254,13 @@ viewFolder path (Folder folder) =
         viewSubfolder index subfolder =
             viewFolder (appendIndex index path) subfolder
 
+        folderLabel : Html Msg
         folderLabel =
             label [ onClick (ClickedFolder path) ] [ text folder.name ]
     in
     if folder.expanded then
         let
+            contents : List (Html Msg)
             contents =
                 List.append
                     (List.indexedMap viewSubfolder folder.subfolders)

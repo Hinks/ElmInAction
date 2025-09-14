@@ -3,6 +3,7 @@ port module PhotoGallery exposing
     , Msg(..)
     , Photo
     , Status(..)
+    , ThumbnailSize
     , init
     , initialModel
     , photoDecoder
@@ -21,6 +22,7 @@ import Json.Decode.Pipeline as Pipeline
 import Json.Encode as Encode
 import Random
 import UrlConstants exposing (urlPrefix)
+
 
 
 -- MODEL
