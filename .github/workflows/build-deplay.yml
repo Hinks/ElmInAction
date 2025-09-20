@@ -1,0 +1,31 @@
+name: Deploy Elm App
+
+on:
+  push:
+    branches:
+      - main   # or 'master', depending on your default branch
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js (for Elm)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Elm
+        run: npm install -g elm
+
+      - name: Run build script
+        run: ./build.sh
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
