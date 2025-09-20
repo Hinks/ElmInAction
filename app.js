@@ -7054,7 +7054,7 @@ var $author$project$PhotoGallery$setFilters = _Platform_outgoingPort(
 					$elm$json$Json$Encode$string($.url))
 				]));
 	});
-var $author$project$UrlConstants$urlPrefix = 'http://elm-in-action.com/';
+var $author$project$UrlConstants$urlPrefix = 'https://elm-in-action.com/';
 var $author$project$PhotoGallery$applyFilters = function (model) {
 	var _v0 = model.status;
 	switch (_v0.$) {
