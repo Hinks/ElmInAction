@@ -6493,13 +6493,14 @@ var $author$project$PhotoGallery$photoDecoder = A4(
 			'url',
 			$elm$json$Json$Decode$string,
 			$elm$json$Json$Decode$succeed($author$project$PhotoGallery$buildPhoto))));
+var $author$project$UrlConstants$urlPrefix = 'https://elm-in-action.com/';
 var $author$project$PhotoGallery$initialCmd = $elm$http$Http$get(
 	{
 		expect: A2(
 			$elm$http$Http$expectJson,
 			$author$project$PhotoGallery$GotPhotos,
 			$elm$json$Json$Decode$list($author$project$PhotoGallery$photoDecoder)),
-		url: 'http://elm-in-action.com/photos/list.json'
+		url: $author$project$UrlConstants$urlPrefix + 'photos/list.json'
 	});
 var $author$project$PhotoGallery$Loading = {$: 'Loading'};
 var $author$project$PhotoGallery$Medium = {$: 'Medium'};
@@ -7054,7 +7055,6 @@ var $author$project$PhotoGallery$setFilters = _Platform_outgoingPort(
 					$elm$json$Json$Encode$string($.url))
 				]));
 	});
-var $author$project$UrlConstants$urlPrefix = 'https://elm-in-action.com/';
 var $author$project$PhotoGallery$applyFilters = function (model) {
 	var _v0 = model.status;
 	switch (_v0.$) {
