@@ -6403,7 +6403,7 @@ var $author$project$PhotoFolders$modelDecoder = A3(
 		}),
 	$author$project$PhotoFolders$modelPhotosDecoder,
 	$author$project$PhotoFolders$folderDecoder);
-var $author$project$PhotoFolders$urlPrefix = 'http://elm-in-action.com/';
+var $author$project$UrlConstants$urlPrefix = 'https://elm-in-action.com/';
 var $author$project$PhotoFolders$init = function (filename) {
 	return _Utils_Tuple2(
 		_Utils_update(
@@ -6412,7 +6412,7 @@ var $author$project$PhotoFolders$init = function (filename) {
 		$elm$http$Http$get(
 			{
 				expect: A2($elm$http$Http$expectJson, $author$project$PhotoFolders$GotInitialModel, $author$project$PhotoFolders$modelDecoder),
-				url: $author$project$PhotoFolders$urlPrefix + 'folders/list'
+				url: $author$project$UrlConstants$urlPrefix + 'folders/list'
 			}));
 };
 var $elm$json$Json$Decode$decodeValue = _Json_run;
@@ -6494,7 +6494,6 @@ var $author$project$PhotoGallery$photoDecoder = A4(
 			'url',
 			$elm$json$Json$Decode$string,
 			$elm$json$Json$Decode$succeed($author$project$PhotoGallery$buildPhoto))));
-var $author$project$UrlConstants$urlPrefix = 'https://elm-in-action.com/';
 var $author$project$PhotoGallery$initialCmd = $elm$http$Http$get(
 	{
 		expect: A2(
@@ -7628,7 +7627,7 @@ var $author$project$PhotoFolders$viewRelatedPhoto = function (url) {
 				_List_fromArray(
 					[
 						$elm$html$Html$Attributes$class('related-photo'),
-						$elm$html$Html$Attributes$src($author$project$PhotoFolders$urlPrefix + ('photos/' + (url + '/thumb')))
+						$elm$html$Html$Attributes$src($author$project$UrlConstants$urlPrefix + ('photos/' + (url + '/thumb')))
 					]),
 				_List_Nil)
 			]));
@@ -7653,7 +7652,7 @@ var $author$project$PhotoFolders$viewSelectedPhoto = function (photo) {
 				$elm$html$Html$img,
 				_List_fromArray(
 					[
-						$elm$html$Html$Attributes$src($author$project$PhotoFolders$urlPrefix + ('photos/' + (photo.url + '/full')))
+						$elm$html$Html$Attributes$src($author$project$UrlConstants$urlPrefix + ('photos/' + (photo.url + '/full')))
 					]),
 				_List_Nil),
 				A2(
