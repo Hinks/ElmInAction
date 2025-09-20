@@ -6403,6 +6403,7 @@ var $author$project$PhotoFolders$modelDecoder = A3(
 		}),
 	$author$project$PhotoFolders$modelPhotosDecoder,
 	$author$project$PhotoFolders$folderDecoder);
+var $author$project$PhotoFolders$urlPrefix = 'http://elm-in-action.com/';
 var $author$project$PhotoFolders$init = function (filename) {
 	return _Utils_Tuple2(
 		_Utils_update(
@@ -6411,7 +6412,7 @@ var $author$project$PhotoFolders$init = function (filename) {
 		$elm$http$Http$get(
 			{
 				expect: A2($elm$http$Http$expectJson, $author$project$PhotoFolders$GotInitialModel, $author$project$PhotoFolders$modelDecoder),
-				url: 'http://elm-in-action.com/folders/list'
+				url: $author$project$PhotoFolders$urlPrefix + 'folders/list'
 			}));
 };
 var $elm$json$Json$Decode$decodeValue = _Json_run;
@@ -7613,7 +7614,6 @@ var $elm$html$Html$Attributes$src = function (url) {
 		'src',
 		_VirtualDom_noJavaScriptOrHtmlUri(url));
 };
-var $author$project$PhotoFolders$urlPrefix = 'http://elm-in-action.com/';
 var $author$project$PhotoFolders$viewRelatedPhoto = function (url) {
 	return A2(
 		$elm$html$Html$a,
