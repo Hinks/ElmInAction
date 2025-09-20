@@ -56,7 +56,7 @@ init : Maybe String -> ( Model, Cmd Msg )
 init filename =
     ( { initialModel | selectedPhotoUrl = filename }
     , Http.get
-        { url = "http://elm-in-action.com/folders/list"
+        { url = urlPrefix ++ "folders/list"
         , expect = Http.expectJson GotInitialModel modelDecoder
         }
     )
